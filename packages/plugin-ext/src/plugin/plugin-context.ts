@@ -158,7 +158,15 @@ import {
     TestRunProfileKind,
     TestTag,
     TestRunRequest,
-    TestMessage
+    TestMessage,
+    TextTabInput,
+    CustomEditorTabInput,
+    NotebookDiffEditorTabInput,
+    NotebookEditorTabInput,
+    TerminalEditorTabInput,
+    TextDiffTabInput,
+    // TextMergeTabInput,
+    WebviewEditorTabInput
 } from './types-impl';
 import { AuthenticationExtImpl } from './authentication-ext';
 import { SymbolKind } from '../common/plugin-api-rpc-model';
@@ -180,7 +188,12 @@ import { ConnectionImpl } from '../common/connection';
 import { TasksExtImpl } from './tasks/tasks';
 import { DebugExtImpl } from './debug/debug-ext';
 import { FileSystemExtImpl } from './file-system-ext-impl';
-import { QuickPick, QuickPickItem, ResourceLabelFormatter, LineChange } from '@theia/plugin';
+import {
+    QuickPick,
+    QuickPickItem,
+    ResourceLabelFormatter,
+    LineChange
+} from '@theia/plugin';
 import { ScmExtImpl } from './scm';
 import { DecorationsExtImpl } from './decorations';
 import { TextEditorExt } from './text-editor';
@@ -201,6 +214,7 @@ import { CustomEditorsExtImpl } from './custom-editors';
 import { WebviewViewsExtImpl } from './webview-views';
 import { PluginPackage } from '../common';
 import { Endpoint } from '@theia/core/lib/browser/endpoint';
+import { TabsExtImpl } from './tabs';
 
 export function createAPIFactory(
     rpc: RPCProtocol,
@@ -238,6 +252,7 @@ export function createAPIFactory(
     const timelineExt = rpc.set(MAIN_RPC_CONTEXT.TIMELINE_EXT, new TimelineExtImpl(rpc, commandRegistry));
     const themingExt = rpc.set(MAIN_RPC_CONTEXT.THEMING_EXT, new ThemingExtImpl(rpc));
     const commentsExt = rpc.set(MAIN_RPC_CONTEXT.COMMENTS_EXT, new CommentsExtImpl(rpc, commandRegistry, documents));
+    const tabsExt = rpc.set(MAIN_RPC_CONTEXT.TABS_EXT, new TabsExtImpl(rpc));
     const customEditorExt = rpc.set(MAIN_RPC_CONTEXT.CUSTOM_EDITORS_EXT, new CustomEditorsExtImpl(rpc, documents, webviewExt, workspaceExt));
     const webviewViewsExt = rpc.set(MAIN_RPC_CONTEXT.WEBVIEW_VIEWS_EXT, new WebviewViewsExtImpl(rpc, webviewExt));
     rpc.set(MAIN_RPC_CONTEXT.DEBUG_EXT, debugExt);
@@ -459,7 +474,7 @@ export function createAPIFactory(
             onDidChangeWindowState(listener, thisArg?, disposables?): theia.Disposable {
                 return windowStateExt.onDidChangeWindowState(listener, thisArg, disposables);
             },
-            createTerminal(nameOrOptions: theia.TerminalOptions | theia.PseudoTerminalOptions | theia.ExtensionTerminalOptions | (string | undefined),
+            createTerminal(nameOrOptions: theia.TerminalOptions | theia.ExtensionTerminalOptions | theia.ExtensionTerminalOptions | (string | undefined),
                 shellPath?: string,
                 shellArgs?: string[]): theia.Terminal {
                 return terminalExt.createTerminal(nameOrOptions, shellPath, shellArgs);
@@ -500,6 +515,9 @@ export function createAPIFactory(
             },
             onDidChangeActiveColorTheme(listener, thisArg?, disposables?) {
                 return themingExt.onDidChangeActiveColorTheme(listener, thisArg, disposables);
+            },
+            get tabGroups(): theia.TabGroups {
+                return tabsExt.tabGroups;
             }
         };
 
@@ -1100,7 +1118,15 @@ export function createAPIFactory(
             TestRunProfileKind,
             TestTag,
             TestRunRequest,
-            TestMessage
+            TestMessage,
+            TabInputText: TextTabInput,
+            TabInputTextDiff: TextDiffTabInput,
+            TabInputCustom: CustomEditorTabInput,
+            TabInputWebview: WebviewEditorTabInput,
+            TabInputNotebook: NotebookEditorTabInput,
+            TabInputNotebookDiff: NotebookDiffEditorTabInput,
+            TabInputTerminal: TerminalEditorTabInput,
+            // TabInputTextMerge: TextMergeTabInput,
         };
     };
 }
