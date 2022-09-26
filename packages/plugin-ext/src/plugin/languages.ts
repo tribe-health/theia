@@ -86,6 +86,7 @@ import { SymbolInformation } from '@theia/core/shared/vscode-languageserver-prot
 import { FoldingProviderAdapter } from './languages/folding';
 import { SelectionRangeProviderAdapter } from './languages/selection-range';
 import { ColorProviderAdapter } from './languages/color';
+import { InlayHintsAdapter } from './languages/inlay-hints';
 import { RenameAdapter } from './languages/rename';
 import { Event } from '@theia/core/lib/common/event';
 import { CommandRegistryImpl } from './command-registry';
@@ -578,6 +579,36 @@ export class LanguagesExtImpl implements LanguagesExt {
         return this.withAdapter(handle, ColorProviderAdapter, adapter => adapter.provideColorPresentations(URI.revive(resource), colorInfo, token), []);
     }
     // ### Color Provider end
+
+    // ### Inlay Hints begin
+    registerInlayHintsProvider(selector: theia.DocumentSelector, provider: theia.InlayHintsProvider, pluginInfo: PluginInfo): theia.Disposable {
+        const callId = this.addNewAdapter(new InlayHintsAdapter(this.documents, provider));
+
+        const eventHandle = typeof provider.onDidChangeInlayHints === 'function' ? this.nextCallId() : undefined;
+        const handle = this.addNewAdapter(new InlayHintsAdapter(this._documents, this._commands.converter, provider, this._logService, extension), extension);
+
+        this.proxy.$registerInlayHintsProvider(handle, this._transformDocumentSelector(selector), typeof provider.resolveInlayHint === 'function', eventHandle, ExtHostLanguageFeatures._extLabel(extension));
+        let result = this._createDisposable(handle);
+
+        if (eventHandle !== undefined) {
+            const subscription = provider.onDidChangeInlayHints!(uri => this._proxy.$emitInlayHintsEvent(eventHandle));
+            result = Disposable.from(result, subscription);
+        }
+        return result;
+    }
+
+    $provideInlayHints(handle: number, resource: UriComponents, range: IRange, token: CancellationToken): Promise<extHostProtocol.IInlayHintsDto | undefined> {
+        return this._withAdapter(handle, InlayHintsAdapter, adapter => adapter.provideInlayHints(URI.revive(resource), range, token), undefined, token);
+    }
+
+    $resolveInlayHint(handle: number, id: extHostProtocol.ChainedCacheId, token: CancellationToken): Promise<extHostProtocol.IInlayHintDto | undefined> {
+        return this._withAdapter(handle, InlayHintsAdapter, adapter => adapter.resolveInlayHint(id, token), undefined, token);
+    }
+
+    $releaseInlayHints(handle: number, id: number): void {
+        this._withAdapter(handle, InlayHintsAdapter, adapter => adapter.releaseHints(id), undefined, undefined);
+    }
+    // ### Inlay Hints end
 
     // ### Folding Range Provider begin
     registerFoldingRangeProvider(selector: theia.DocumentSelector, provider: theia.FoldingRangeProvider, pluginInfo: PluginInfo): theia.Disposable {

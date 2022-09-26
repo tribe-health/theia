@@ -373,6 +373,40 @@ export interface CodeActionProvider {
     providedCodeActionKinds?: string[];
 }
 
+export enum InlayHintKind {
+    Type = 1,
+    Parameter = 2,
+}
+
+export interface InlayHintLabelPart {
+    label: string;
+    tooltip?: string | MarkdownStringDTO;
+    command?: Command;
+    location?: Location;
+}
+
+export interface InlayHint {
+    label: string | InlayHintLabelPart[];
+    tooltip?: string | MarkdownStringDTO;
+    textEdits?: TextEdit[];
+    position: monaco.Position;
+    kind?: InlayHintKind;
+    paddingLeft?: boolean;
+    paddingRight?: boolean;
+}
+
+export interface InlayHintList {
+    hints: InlayHint[];
+    dispose(): void;
+}
+
+export interface InlayHintsProvider {
+    displayName?: string;
+    onDidChangeInlayHints?: TheiaEvent<void>;
+    provideInlayHints(model: monaco.editor.ITextModel, range: Range, token: monaco.CancellationToken): PromiseLike<InlayHintList>;
+    resolveInlayHint?(hint: InlayHint, token: monaco.CancellationToken): PromiseLike<InlayHint>;
+}
+
 // copied from https://github.com/microsoft/vscode/blob/b165e20587dd0797f37251515bc9e4dbe513ede8/src/vs/editor/common/modes.ts
 export interface WorkspaceEditMetadata {
     needsConfirmation: boolean;

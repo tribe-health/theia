@@ -1994,3 +1994,19 @@ export interface SecretsMain {
     $setPassword(extensionId: string, key: string, value: string): Promise<void>;
     $deletePassword(extensionId: string, key: string): Promise<void>;
 }
+
+export interface InlayHintDto {
+    cacheId: number;
+    label: string | theia.InlayHintLabelPart[];
+    tooltip?: string | theia.MarkdownString;
+    textEdits?: TextEdit[];
+    position: { lineNumber: number, column: number };
+    kind?: theia.InlayHintKind;
+    paddingLeft?: boolean;
+    paddingRight?: boolean;
+}
+
+export interface InlayHintsDto {
+    cacheId: number;
+    hints: InlayHintDto[];
+}

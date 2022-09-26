@@ -739,6 +739,9 @@ export function createAPIFactory(
             registerColorProvider(selector: theia.DocumentSelector, provider: theia.DocumentColorProvider): theia.Disposable {
                 return languagesExt.registerColorProvider(selector, provider, pluginToPluginInfo(plugin));
             },
+            registerInlayHintsProvider(selector: theia.DocumentSelector, provider: theia.InlayHintsProvider): theia.Disposable {
+                return languagesExt.registerInlayHintsProvider(selector, provider, pluginToPluginInfo(plugin));
+            },
             registerFoldingRangeProvider(selector: theia.DocumentSelector, provider: theia.FoldingRangeProvider): theia.Disposable {
                 return languagesExt.registerFoldingRangeProvider(selector, provider, pluginToPluginInfo(plugin));
             },
