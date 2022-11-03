@@ -30,6 +30,7 @@ import URI from '@theia/core/lib/common/uri';
 import { CancellationToken, CancellationTokenSource } from '@theia/core/shared/vscode-languageserver-protocol';
 import { Range, Position } from '../plugin/types-impl';
 import { BinaryBuffer } from '@theia/core/lib/common/buffer';
+import { Is } from '@theia/core/lib/common/is';
 
 export interface MessageConnection {
     send(msg: string): void;
@@ -71,7 +72,7 @@ export namespace ConnectionClosedError {
         return Object.assign(new Error(message), { code });
     }
     export function is(error: unknown): error is ConnectionClosedError {
-        return !!error && typeof error === 'object' && 'code' in error && (error as ConnectionClosedError).code === code;
+        return Is.object(error) && 'code' in error && (error as ConnectionClosedError).code === code;
     }
 }
 
@@ -469,8 +470,7 @@ enum SerializedObjectType {
 }
 
 function isSerializedObject(obj: unknown): obj is SerializedObject {
-    const serializedObject = obj as SerializedObject;
-    return !!obj && typeof obj === 'object' && serializedObject.$type !== undefined && serializedObject.data !== undefined;
+    return Is.object<SerializedObject>(obj) && obj.$type !== undefined && obj.data !== undefined;
 }
 
 export const enum MessageType {

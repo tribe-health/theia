@@ -37,6 +37,7 @@ import {
 import { IEditorWorkerService } from '@theia/monaco-editor-core/esm/vs/editor/common/services/editorWorker';
 import { StandaloneServices } from '@theia/monaco-editor-core/esm/vs/editor/standalone/browser/standaloneServices';
 import { EndOfLineSequence } from '@theia/monaco-editor-core/esm/vs/editor/common/model';
+import { Is } from '@theia/core/lib/common/is';
 
 export namespace WorkspaceFileEdit {
     export function is(arg: Edit): arg is monaco.languages.WorkspaceFileEdit {
@@ -47,12 +48,9 @@ export namespace WorkspaceFileEdit {
 
 export namespace WorkspaceTextEdit {
     export function is(arg: Edit): arg is monaco.languages.WorkspaceTextEdit {
-        return !!arg && typeof arg === 'object'
-            && 'resource' in arg
+        return Is.object<monaco.languages.WorkspaceTextEdit>(arg)
             && monaco.Uri.isUri(arg.resource)
-            && 'edit' in arg
-            && arg.edit !== null
-            && typeof arg.edit === 'object';
+            && Is.object(arg.edit);
     }
 }
 
@@ -60,8 +58,7 @@ export type Edit = monaco.languages.WorkspaceFileEdit | monaco.languages.Workspa
 
 export namespace ResourceFileEdit {
     export function is(arg: ResourceEdit): arg is MonacoResourceFileEdit {
-        return typeof arg === 'object' && (('oldResource' in arg) && monaco.Uri.isUri((arg as MonacoResourceFileEdit).oldResource)) ||
-            ('newResource' in arg && monaco.Uri.isUri((arg as MonacoResourceFileEdit).newResource));
+        return Is.object<MonacoResourceFileEdit>(arg) && (monaco.Uri.isUri(arg.oldResource) || monaco.Uri.isUri(arg.newResource));
     }
 }
 

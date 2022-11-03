@@ -14,6 +14,8 @@
 // SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
 // *****************************************************************************
 
+import { Is } from '../is';
+
 /**
  * A menu entry representing an action, e.g. "New File".
  */
@@ -37,7 +39,7 @@ export interface MenuAction extends MenuNodeRenderingData, Pick<MenuNodeMetadata
 export namespace MenuAction {
     /* Determine whether object is a MenuAction */
     export function is(arg: unknown): arg is MenuAction {
-        return !!arg && typeof arg === 'object' && 'commandId' in arg;
+        return Is.object(arg) && 'commandId' in arg;
     }
 }
 

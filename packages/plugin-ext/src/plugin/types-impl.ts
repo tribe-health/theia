@@ -32,6 +32,7 @@ import { FileSystemProviderErrorCode, markAsFileSystemProviderError } from '@the
 import * as paths from 'path';
 import { ObjectsTransferrer } from '../common/rpc-protocol';
 import { es5ClassCompat } from '../common/types';
+import { Is } from '@theia/core/lib/common/is';
 
 /**
  * A reviver that takes URI's transferred via JSON.stringify() and makes
@@ -546,14 +547,13 @@ export class Range {
         return new Range(start, end);
     }
 
-    static isRange(thing: unknown): thing is theia.Range {
-        if (thing instanceof Range) {
+    static isRange(arg: unknown): arg is theia.Range {
+        if (arg instanceof Range) {
             return true;
         }
-        const range = thing as theia.Range;
-        return !!thing && typeof thing === 'object'
-            && Position.isPosition(range.start)
-            && Position.isPosition(range.end);
+        return Is.object<theia.Range>(arg)
+            && Position.isPosition(arg.start)
+            && Position.isPosition(arg.end);
     }
 
     toJSON(): unknown {
@@ -736,7 +736,7 @@ export class ThemeIcon {
 
 export namespace ThemeIcon {
     export function is(item: unknown): item is ThemeIcon {
-        return typeof item === 'object' && !!item && 'id' in item;
+        return Is.object(item) && 'id' in item;
     }
 }
 
@@ -2784,7 +2784,7 @@ export class SemanticTokensLegend {
 }
 
 function isStrArrayOrUndefined(arg: unknown): arg is string[] | undefined {
-    return ((typeof arg === 'undefined') || (Array.isArray(arg) && arg.every(e => typeof e === 'string')));
+    return typeof arg === 'undefined' || Is.stringArray(arg);
 }
 
 @es5ClassCompat

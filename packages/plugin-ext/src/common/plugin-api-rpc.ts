@@ -107,7 +107,7 @@ import type {
 import { SerializableEnvironmentVariableCollection } from '@theia/terminal/lib/common/base-terminal-protocol';
 import { ThemeType } from '@theia/core/lib/common/theme';
 import { Disposable } from '@theia/core/lib/common/disposable';
-import { PickOptions, QuickInputButtonHandle } from '@theia/core/lib/common';
+import { Is, PickOptions, QuickInputButtonHandle } from '@theia/core/lib/common';
 import { Severity } from '@theia/core/lib/common/severity';
 
 export interface PreferenceData {
@@ -776,7 +776,7 @@ export interface TreeViewSelection {
 }
 export namespace TreeViewSelection {
     export function is(arg: unknown): arg is TreeViewSelection {
-        return !!arg && typeof arg === 'object' && 'treeViewId' in arg && 'treeItemId' in arg;
+        return Is.object(arg) && 'treeViewId' in arg && 'treeItemId' in arg;
     }
 }
 
@@ -822,7 +822,7 @@ export interface ScmCommandArg {
 }
 export namespace ScmCommandArg {
     export function is(arg: unknown): arg is ScmCommandArg {
-        return !!arg && typeof arg === 'object' && 'sourceControlHandle' in arg;
+        return Is.object(arg) && 'sourceControlHandle' in arg;
     }
 }
 
@@ -838,7 +838,7 @@ export interface ScmExt {
 
 export namespace TimelineCommandArg {
     export function is(arg: unknown): arg is TimelineCommandArg {
-        return !!arg && typeof arg === 'object' && 'timelineHandle' in arg;
+        return Is.object(arg) && 'timelineHandle' in arg;
     }
 }
 export interface TimelineCommandArg {
@@ -857,7 +857,7 @@ export interface DecorationReply { [id: number]: DecorationData; }
 
 export namespace CommentsCommandArg {
     export function is(arg: unknown): arg is CommentsCommandArg {
-        return !!arg && typeof arg === 'object' && 'commentControlHandle' in arg && 'commentThreadHandle' in arg && 'text' in arg && !('commentUniqueId' in arg);
+        return Is.object(arg) && 'commentControlHandle' in arg && 'commentThreadHandle' in arg && 'text' in arg && !('commentUniqueId' in arg);
     }
 }
 export interface CommentsCommandArg {
@@ -868,7 +868,7 @@ export interface CommentsCommandArg {
 
 export namespace CommentsContextCommandArg {
     export function is(arg: unknown): arg is CommentsContextCommandArg {
-        return !!arg && typeof arg === 'object' && 'commentControlHandle' in arg && 'commentThreadHandle' in arg && 'commentUniqueId' in arg && !('text' in arg);
+        return Is.object(arg) && 'commentControlHandle' in arg && 'commentThreadHandle' in arg && 'commentUniqueId' in arg && !('text' in arg);
     }
 }
 export interface CommentsContextCommandArg {
@@ -879,7 +879,7 @@ export interface CommentsContextCommandArg {
 
 export namespace CommentsEditCommandArg {
     export function is(arg: unknown): arg is CommentsEditCommandArg {
-        return !!arg && typeof arg === 'object' && 'commentControlHandle' in arg && 'commentThreadHandle' in arg && 'commentUniqueId' in arg && 'text' in arg;
+        return Is.object(arg) && 'commentControlHandle' in arg && 'commentThreadHandle' in arg && 'commentUniqueId' in arg && 'text' in arg;
     }
 }
 export interface CommentsEditCommandArg {

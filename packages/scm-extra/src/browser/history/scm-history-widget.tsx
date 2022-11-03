@@ -15,7 +15,7 @@
 // *****************************************************************************
 
 import { injectable, inject, postConstruct } from '@theia/core/shared/inversify';
-import { Event as TheiaEvent, DisposableCollection } from '@theia/core';
+import { Event as TheiaEvent, DisposableCollection, Is } from '@theia/core';
 import { OpenerService, open, StatefulWidget, SELECTED_CLASS, WidgetManager, ApplicationShell, codicon } from '@theia/core/lib/browser';
 import { CancellationTokenSource } from '@theia/core/lib/common/cancellation';
 import { Message } from '@theia/core/shared/@phosphor/messaging';
@@ -48,7 +48,7 @@ export interface ScmCommitNode {
 
 export namespace ScmCommitNode {
     export function is(node: unknown): node is ScmCommitNode {
-        return !!node && typeof node === 'object' && 'commitDetails' in node && 'expanded' in node && 'selected' in node;
+        return Is.object(node) && 'commitDetails' in node && 'expanded' in node && 'selected' in node;
     }
 }
 
