@@ -159,7 +159,10 @@ import {
     TestTag,
     TestRunRequest,
     TestMessage,
-    ExtensionKind
+    ExtensionKind,
+    InlineSuggestion,
+    InlineSuggestionList,
+    InlineCompletionTriggerKind
 } from './types-impl';
 import { AuthenticationExtImpl } from './authentication-ext';
 import { SymbolKind } from '../common/plugin-api-rpc-model';
@@ -697,6 +700,9 @@ export function createAPIFactory(
             registerCompletionItemProvider(selector: theia.DocumentSelector, provider: theia.CompletionItemProvider, ...triggerCharacters: string[]): theia.Disposable {
                 return languagesExt.registerCompletionItemProvider(selector, provider, triggerCharacters, pluginToPluginInfo(plugin));
             },
+            registerInlineCompletionItemProvider(selector: theia.DocumentSelector, provider: theia.InlineCompletionItemProvider): theia.Disposable {
+                return languagesExt.registerInlineCompletionsProvider(selector, provider);
+            },
             registerDefinitionProvider(selector: theia.DocumentSelector, provider: theia.DefinitionProvider): theia.Disposable {
                 return languagesExt.registerDefinitionProvider(selector, provider, pluginToPluginInfo(plugin));
             },
@@ -1105,7 +1111,10 @@ export function createAPIFactory(
             TestTag,
             TestRunRequest,
             TestMessage,
-            ExtensionKind
+            ExtensionKind,
+            InlineCompletionItem: InlineSuggestion,
+            InlineCompletionList: InlineSuggestionList,
+            InlineCompletionTriggerKind
         };
     };
 }
